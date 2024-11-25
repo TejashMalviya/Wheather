@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Animation with Details</title>
+    <title>Weather with Animation</title>
     <style>
-        /* General styles */
         @import 'https://fonts.googleapis.com/css?family=Lato:300';
         @import 'https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css';
 
@@ -19,108 +18,96 @@
             width: 100%;
             height: 100%;
             font-family: 'Lato', sans-serif;
-        }
-
-        body {
-            background: #eee;
-            transition: background 0.5s ease-in-out;
-        }
-
-        .background {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        nav {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 10px;
-        }
-
-        nav li a {
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            background: #007BFF;
+            background: linear-gradient(135deg, #6FB1FC, #4364F7, #004E92);
             color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background 0.3s ease-in-out;
-        }
-
-        nav li a.active {
-            background: #0056b3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         #weather-details {
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 1.5em;
-            color: #333;
+            margin-top: 20px;
+        }
+
+        .loading {
+            font-size: 1.2em;
+            color: #f1c40f;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        .icon {
+            font-size: 5em;
+        }
+
+        .temperature {
+            font-size: 2.5em;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="background">
-        <nav>
-            <ul>
-                <li><a id="button-snow" class="active"><i class="wi wi-snow"></i></a></li>
-                <li><a id="button-wind"><i class="wi wi-strong-wind"></i></a></li>
-                <li><a id="button-rain"><i class="wi wi-rain"></i></a></li>
-                <li><a id="button-thunder"><i class="wi wi-lightning"></i></a></li>
-                <li><a id="button-sun"><i class="wi wi-day-sunny"></i></a></li>
-            </ul>
-        </nav>
-        <div id="weather-details">
-            <p id="location">Fetching location...</p>
-            <p id="temperature"></p>
-            <p id="description"></p>
-        </div>
+    <div id="weather-details">
+        <p class="loading">Fetching weather data...</p>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        const API_KEY = 'your_api_key'; // Replace with your OpenWeatherMap API key
+        const API_KEY = 'b6907d289e10d714a6e88b30761fae22'; // Demo API key
+        const weatherDetails = document.getElementById('weather-details');
 
-        // Fetch Weather Data
-        function fetchWeather(city) {
-            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+        function fetchWeather(lat, lon) {
+            const apiUrl = `https://openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
 
-            $.getJSON(apiUrl, function (data) {
-                const location = data.name;
-                const temp = Math.round(data.main.temp) + '°C';
-                const weatherDesc = data.weather[0].description;
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch weather data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const { name } = data;
+                    const { description, icon } = data.weather[0];
+                    const { temp } = data.main;
 
-                $('#location').text(`Location: ${location}`);
-                $('#temperature').text(`Temperature: ${temp}`);
-                $('#description').text(`Condition: ${weatherDesc}`);
-            }).fail(function () {
-                $('#location').text('Error fetching weather data.');
-            });
+                    weatherDetails.innerHTML = `
+                        <div class="icon">
+                            <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="${description}">
+                        </div>
+                        <div>
+                            <h1>${name}</h1>
+                            <p class="temperature">${Math.round(temp)}°C</p>
+                            <p>${description}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    weatherDetails.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                });
         }
 
-        $(document).ready(function () {
-            const defaultCity = 'New York'; // Default city to fetch weather details
-            fetchWeather(defaultCity);
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        fetchWeather(latitude, longitude);
+                    },
+                    () => {
+                        weatherDetails.innerHTML = `<p class="error">Please allow location access to get weather details.</p>`;
+                    }
+                );
+            } else {
+                weatherDetails.innerHTML = `<p class="error">Geolocation is not supported by your browser.</p>`;
+            }
+        }
 
-            // Handle button clicks for animations
-            $('nav a').on('click', function () {
-                $('nav a').removeClass('active');
-                $(this).addClass('active');
-            });
-        });
+        // Get user's location on page load
+        window.onload = getLocation;
     </script>
 </body>
 </html>
