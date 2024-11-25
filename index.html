@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Animation Website</title>
+    <title>Weather Animation with Details</title>
     <style>
         /* General styles */
         @import 'https://fonts.googleapis.com/css?family=Lato:300';
@@ -62,36 +62,14 @@
             background: #0056b3;
         }
 
-        /* Animations */
-        .snowflake {
+        #weather-details {
             position: absolute;
-            top: -10px;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
             font-size: 1.5em;
-            color: #fff;
-            animation: fall linear;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh);
-                opacity: 0;
-            }
-        }
-
-        .raindrop {
-            position: absolute;
-            top: -10px;
-            width: 2px;
-            height: 15px;
-            background: #87CEEB;
-            animation: drop linear;
-        }
-
-        @keyframes drop {
-            to {
-                transform: translateY(110vh);
-                opacity: 0;
-            }
+            color: #333;
         }
     </style>
 </head>
@@ -106,92 +84,42 @@
                 <li><a id="button-sun"><i class="wi wi-day-sunny"></i></a></li>
             </ul>
         </nav>
+        <div id="weather-details">
+            <p id="location">Fetching location...</p>
+            <p id="temperature"></p>
+            <p id="description"></p>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function () {
-            const weatherEffects = {
-                snow: function () {
-                    $('body').css('background', 'linear-gradient(0deg, #fff, #e6f7ff)');
-                    $('.background').addClass('snow-effect');
-                    clearOtherEffects('snow');
-                },
-                wind: function () {
-                    $('body').css('background', 'linear-gradient(0deg, #d4f1f9, #a2d9ff)');
-                    $('.background').removeClass().addClass('background wind-effect');
-                    clearOtherEffects('wind');
-                },
-                rain: function () {
-                    $('body').css('background', 'linear-gradient(0deg, #87CEEB, #4682B4)');
-                    $('.background').removeClass().addClass('background rain-effect');
-                    clearOtherEffects('rain');
-                },
-                thunder: function () {
-                    $('body').css('background', 'linear-gradient(0deg, #4b4b4b, #000)');
-                    $('.background').removeClass().addClass('background thunder-effect');
-                    clearOtherEffects('thunder');
-                },
-                sun: function () {
-                    $('body').css('background', 'linear-gradient(0deg, #FFE57F, #FFD54F)');
-                    $('.background').removeClass().addClass('background sun-effect');
-                    clearOtherEffects('sun');
-                },
-            };
+        const API_KEY = 'your_api_key'; // Replace with your OpenWeatherMap API key
 
-            // Handle button clicks
+        // Fetch Weather Data
+        function fetchWeather(city) {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+
+            $.getJSON(apiUrl, function (data) {
+                const location = data.name;
+                const temp = Math.round(data.main.temp) + '°C';
+                const weatherDesc = data.weather[0].description;
+
+                $('#location').text(`Location: ${location}`);
+                $('#temperature').text(`Temperature: ${temp}`);
+                $('#description').text(`Condition: ${weatherDesc}`);
+            }).fail(function () {
+                $('#location').text('Error fetching weather data.');
+            });
+        }
+
+        $(document).ready(function () {
+            const defaultCity = 'New York'; // Default city to fetch weather details
+            fetchWeather(defaultCity);
+
+            // Handle button clicks for animations
             $('nav a').on('click', function () {
-                const effect = $(this).attr('id').replace('button-', '');
-                if (weatherEffects[effect]) {
-                    weatherEffects[effect]();
-                }
                 $('nav a').removeClass('active');
                 $(this).addClass('active');
             });
-
-            function clearOtherEffects(activeEffect) {
-                const effects = ['snow', 'wind', 'rain', 'thunder', 'sun'];
-                effects.forEach(effect => {
-                    if (effect !== activeEffect) {
-                        $('.background').removeClass(`${effect}-effect`);
-                    }
-                });
-            }
-
-            // Animation for Snow
-            const snowFlakes = () => {
-                const snow = $('<div class="snowflake">❄</div>');
-                $('.background').append(snow);
-                snow.css({
-                    left: `${Math.random() * 100}%`,
-                    animationDuration: `${Math.random() * 3 + 2}s`,
-                    animationDelay: `${Math.random() * 2}s`,
-                });
-                snow.on('animationend', function () {
-                    $(this).remove();
-                });
-            };
-
-            setInterval(() => {
-                if ($('.background').hasClass('snow-effect')) snowFlakes();
-            }, 200);
-
-            // Add rain droplets
-            const rainDrops = () => {
-                const rain = $('<div class="raindrop"></div>');
-                $('.background').append(rain);
-                rain.css({
-                    left: `${Math.random() * 100}%`,
-                    animationDuration: `${Math.random() * 1.5 + 0.5}s`,
-                    animationDelay: `${Math.random() * 0.5}s`,
-                });
-                rain.on('animationend', function () {
-                    $(this).remove();
-                });
-            };
-
-            setInterval(() => {
-                if ($('.background').hasClass('rain-effect')) rainDrops();
-            }, 150);
         });
     </script>
 </body>
