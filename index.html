@@ -3,72 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Animated Weather Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="wrapper">
-        <h1>My Weather App</h1>
-        <div id="date" class="date"></div>
-        <div class="time-container">
-            <div id="hour" class="time-box"></div>
-            <div id="minute" class="time-box"></div>
-            <div id="second" class="time-box"></div>
-        </div>
-
-        <div class="tab-container">
-            <p class="tab current-tab" data-userWeather>Your Weather</p>
-            <p class="tab" data-SearchWeather>Search Weather</p>
-        </div>
-
-        <div class="weather-container">
-            <div class="sub-container grant-location-container active">
-                <img src="assets/location.png" width="88" height="80" loading="lazy">
-                <p>Grant Location Access</p>
-                <p>Allow Access to get Weather Information</p>
-                <button class="btn" data-grantAccess>Allow Your Location</button>
-            </div>
-
-            <form class="form-container" data-SearchForm>
-                <input placeholder="Search For City..." data-searchInput>
-                <button class="btn" type="submit">
-                    <img src="assets/search.png" alt="" width="20" height="20" loading="lazy">
-                </button>
-            </form>
-
-            <div class="sub-container loading-container">
-                <img src="assets/loading.gif" alt="Loading" width="150" height="150">
-                <p>Loading</p>
-            </div>
-
-            <div class="sub-container user-info-container">
-                <div class="name">
-                    <p data-cityName></p>
-                    <img data-countryIcon>
-                </div>
-                <p data-weatherDesc></p>
-                <img data-weatherIcon>
-                <p data-temp></p>
-                <div class="cards-container">
-                    <div class="cards">
-                        <img src="assets/wind.png" alt="">
-                        <p>Wind Speed</p>
-                        <p data-windSpeed></p>
-                    </div>
-                    <div class="cards">
-                        <img src="assets/humidity.png" alt="">
-                        <p>Humidity</p>
-                        <p data-humidity></p>
-                    </div>
-                    <div class="cards">
-                        <img src="assets/cloud.png" alt="">
-                        <p>Clouds</p>
-                        <p data-cloudiness></p>
-                    </div>
-                </div>
-            </div>
+    <div class="background">
+        <div class="container">
+            <svg id="back">
+                <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
+                    <stop offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
+                </radialGradient>
+                <path id="sunburst" style="fill:url(#SVGID_1_);" d="M0,319.7c-18.6,0-37.3..."/>
+            </svg>
+            <nav>
+                <ul>
+                    <li><a id="button-snow" class="active"><i class="wi wi-snow"></i></a></li>
+                    <li><a id="button-wind"><i class="wi wi-strong-wind"></i></a></li>
+                    <li><a id="button-rain"><i class="wi wi-rain"></i></a></li>
+                    <li><a id="button-thunder"><i class="wi wi-lightning"></i></a></li>
+                    <li><a id="button-sun"><i class="wi wi-day-sunny"></i></a></li>
+                </ul>
+            </nav>
         </div>
     </div>
-    <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
