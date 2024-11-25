@@ -1,0 +1,61 @@
+@import 'https://fonts.googleapis.com/css?family=Lato:300';
+
+html, body, .background {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    background: linear-gradient(0deg, rgba(0, 0, 200, 0.2), rgba(0, 0, 200, 0));
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    font-size: 24px;
+    color: #444;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    background: #f0f0f0;
+    transform: scale(1.2);
+}
+
+#back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#sunburst {
+    animation: rotateSunburst 10s linear infinite;
+}
+
+@keyframes rotateSunburst {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
